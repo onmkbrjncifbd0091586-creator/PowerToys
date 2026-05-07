@@ -541,7 +541,7 @@ namespace Microsoft.PowerToys.Settings.UI.Controls
 
                     if (lastValidSettings.IsValid())
                     {
-                        if (string.Equals(lastValidSettings.ToString(), hotkeySettings.ToString(), StringComparison.OrdinalIgnoreCase))
+                        if (hotkeySettings != null && string.Equals(lastValidSettings.ToString(), hotkeySettings.ToString(), StringComparison.OrdinalIgnoreCase))
                         {
                             c.HasConflict = hotkeySettings.HasConflict;
                             c.ConflictMessage = hotkeySettings.ConflictDescription;
@@ -671,7 +671,7 @@ namespace Microsoft.PowerToys.Settings.UI.Controls
         private async void OpenDialogButton_Click(object sender, RoutedEventArgs e)
         {
             c.Keys = null;
-            c.Keys = HotkeySettings?.GetKeysList();
+            c.Keys = HotkeySettings?.GetKeysList() ?? new List<object>();
 
             c.IgnoreConflict = IgnoreConflict;
             c.HasConflict = hotkeySettings?.HasConflict ?? false;
@@ -679,7 +679,7 @@ namespace Microsoft.PowerToys.Settings.UI.Controls
 
             // 92 means the Win key. The logic is: warning should be visible if the shortcut contains Alt AND contains Ctrl AND NOT contains Win.
             // Additional key must be present, as this is a valid, previously used shortcut shown at dialog open. Check for presence of non-modifier-key is not necessary therefore
-            c.IsWarningAltGr = c.Keys != null && c.Keys.Contains("Ctrl") && c.Keys.Contains("Alt") && !c.Keys.Contains(92);
+            c.IsWarningAltGr = c.Keys.Contains("Ctrl") && c.Keys.Contains("Alt") && !c.Keys.Contains(92);
 
             shortcutDialog.XamlRoot = this.XamlRoot;
             shortcutDialog.RequestedTheme = this.ActualTheme;
